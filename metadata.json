@@ -1,1 +1,7 @@
-
+{
+  "name": "那瑪夏小農夫 - 線上生鮮直送",
+  "description": "提供那瑪夏地區優質農產，主打產季分流、產地直送。週一採收、週二包裝、週三準時送達。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
