@@ -36,7 +36,7 @@
 </head>
   <body class="bg-[#F8FAFC] text-slate-900 overflow-x-hidden">
     <div id="root"></div>
-    <!-- 在 Vite 專案中，所有的依賴都由 npm 管理，不需要 importmap -->
-    <script type="module" src="/index.tsx"></script>
+    <!-- 修正：移除路徑前的斜線，改為相對路徑，這是 Vite 的標準做法 -->
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
