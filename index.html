@@ -3,13 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>那瑪夏小農夫 - 本地生鮮直達</title>
+    <title>那瑪夏小農夫 - 產地直達的鮮甜味</title>
+    <meta name="description" content="週一採收、週二包裝、週三送達。那瑪夏高山水蜜桃、金煌芒果與精選配菜箱直送。">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
       body {
         font-family: 'Noto Sans TC', sans-serif;
+        scroll-behavior: smooth;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
       }
     </style>
   <script type="importmap">
@@ -25,9 +34,9 @@
 }
 </script>
 </head>
-  <body class="bg-slate-50 text-slate-900">
+  <body class="bg-[#F8FAFC] text-slate-900 overflow-x-hidden">
     <div id="root"></div>
-    <!-- Vite 入口點 -->
-    <script type="module" src="/index.tsx"></script>
+    <!-- 去掉 / 前綴，改為相對路徑 -->
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
