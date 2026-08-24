@@ -1,0 +1,22 @@
+name: Runner Connection Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-mac-runner:
+    runs-on: [self-hosted, macOS, ARM64, namasia]
+    timeout-minutes: 5
+    steps:
+      - name: Show connection status
+        run: |
+          echo "GitHub Actions 已成功把工作送到家中 Mac。"
+          echo "GitHub Actions successfully reached the home Mac."
+          echo "Runner: $RUNNER_NAME"
+          echo "OS: $RUNNER_OS"
+          echo "Architecture: $RUNNER_ARCH"
+
+      - name: Safety note
+        run: |
+          echo "這只是連線測試，不會啟動 Codex、不會操作瀏覽器、不會讀取個資。"
+          echo "Connection test only. Codex, browser automation, and private data are not used."
