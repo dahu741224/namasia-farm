@@ -1,0 +1,32 @@
+name: Event Registration Issue
+
+on:
+  issues:
+    types: [edited]
+
+jobs:
+  run-registration:
+    if: contains(github.event.issue.body, 'STATUS: READY_FOR_CODEX')
+    runs-on: [self-hosted, macOS, ARM64, namasia]
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Codex registration task
+        shell: bash
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: |
+          /usr/local/bin/codex exec --dangerously-bypass-approvals-and-sandbox "你正在家中的那瑪夏小農夫 Mac 上執行活動報名任務。請先閱讀目前 repository 的 AGENTS.md 與 EVENT_REGISTRATION_TEMPLATE.md，並嚴格遵守。\n\nGitHub Issue 標題：$ISSUE_TITLE\nIssue：$ISSUE_URL\n內容：\n$ISSUE_BODY\n\n目標：協助完成這場活動的報名。已確認的一般欄位可直接處理，不要重複詢問。不得虛構統編、食品登錄、保單、證件、密碼或付款資訊。若遇到付款、驗證碼、需要新增重大法律承諾、或資料不實風險，請停止並清楚回報卡點。若表單可合法完整完成，請完成送出並確認成功頁。將執行結果寫到 repository 根目錄 EVENT_REGISTRATION_RESULT.md，內容包含：狀態（成功/需確認/失敗）、已完成事項、卡點、下一步。"
+
+      - name: Show result file
+        if: always()
+        run: |
+          if [ -f EVENT_REGISTRATION_RESULT.md ]; then
+            cat EVENT_REGISTRATION_RESULT.md
+          else
+            echo "EVENT_REGISTRATION_RESULT.md not created"
+          fi
