@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  issues: read
+  issues: write
 
 jobs:
   run-registration:
@@ -58,3 +58,24 @@ jobs:
           else
             echo "EVENT_REGISTRATION_RESULT.md not created"
           fi
+
+      - name: Post result back to issue
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        with:
+          script: |
+            const fs = require('fs');
+            let result = 'EVENT_REGISTRATION_RESULT.md not created';
+            if (fs.existsSync('EVENT_REGISTRATION_RESULT.md')) {
+              result = fs.readFileSync('EVENT_REGISTRATION_RESULT.md', 'utf8');
+            }
+            const marker = '<!-- NAMASIA_REGISTRATION_RESULT -->';
+            const body = `${marker}\n## 📋 Codex 報名處理結果\n\n${result}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number(process.env.ISSUE_NUMBER),
+              body
+            });
