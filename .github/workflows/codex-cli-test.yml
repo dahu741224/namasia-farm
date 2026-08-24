@@ -1,0 +1,18 @@
+name: Codex CLI Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-codex-cli:
+    runs-on: [self-hosted, macOS, ARM64, namasia]
+    timeout-minutes: 5
+    steps:
+      - name: Check Codex CLI
+        run: |
+          test -x /usr/local/bin/codex
+          /usr/local/bin/codex --version
+
+      - name: Run safe non-interactive Codex test
+        run: |
+          /usr/local/bin/codex exec --skip-git-repo-check --ephemeral "請只回答：GitHub Runner 已成功呼叫 Codex CLI"
