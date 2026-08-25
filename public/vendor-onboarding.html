@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>市集／活動代報｜首次客戶建檔</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>body{font-family:'Noto Sans TC',sans-serif}.step{display:none}.step.active{display:block}</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="max-w-3xl mx-auto px-4 py-8 md:py-12">
+    <div class="mb-8">
+      <div class="inline-flex items-center gap-2 rounded-full bg-emerald-100 text-emerald-800 px-4 py-2 text-sm font-bold">那瑪夏 AI 市集代報服務</div>
+      <h1 class="text-3xl md:text-4xl font-black mt-4">市集／活動代報｜首次客戶建檔</h1>
+      <p class="text-slate-600 mt-3 leading-7">第一次完整填寫一次即可。之後若資料沒有變動，只要提供活動名稱或報名連結，就能直接進入活動評估與代報流程。</p>
+    </div>
+
+    <div class="mb-6">
+      <div class="flex justify-between text-xs font-bold text-slate-500 mb-2"><span id="stepLabel">第 1 步，共 6 步</span><span id="progressText">17%</span></div>
+      <div class="h-2 bg-slate-200 rounded-full overflow-hidden"><div id="progressBar" class="h-full bg-emerald-600 transition-all" style="width:17%"></div></div>
+    </div>
+
+    <form id="onboardingForm" class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-8" enctype="multipart/form-data">
+      <section class="step active" data-step="1">
+        <h2 class="text-xl font-black mb-5">1｜聯絡人資料</h2>
+        <div class="grid gap-4">
+          <label class="grid gap-2"><span class="font-bold">聯絡人姓名 *</span><input name="contact_name" required class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">手機號碼 *</span><input name="phone" required inputmode="tel" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">Email</span><input name="email" type="email" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">LINE ID</span><input name="line_id" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">通訊地址</span><textarea name="address" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">主要交通工具</span><select name="vehicle_type" class="border rounded-xl px-4 py-3"><option value="">請選擇</option><option>汽車</option><option>貨車／冷藏車</option><option>機車</option><option>餐車</option><option>其他</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">車牌號碼</span><input name="vehicle_plate" class="border rounded-xl px-4 py-3" /></label>
+        </div>
+      </section>
+
+      <section class="step" data-step="2">
+        <h2 class="text-xl font-black mb-5">2｜品牌與商品</h2>
+        <div class="grid gap-4">
+          <label class="grid gap-2"><span class="font-bold">品牌名稱 *</span><input name="brand_name" required class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">品牌簡介</span><textarea name="brand_intro" placeholder="約 50～150 字" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">品牌故事／特色介紹</span><textarea name="brand_story" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">主要販售商品</span><textarea name="products" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">商品售價／價格區間</span><textarea name="price_range" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">Facebook</span><input name="facebook_url" type="url" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">Instagram</span><input name="instagram_url" type="url" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">LINE 官方帳號／其他網址</span><input name="line_url" type="url" class="border rounded-xl px-4 py-3" /></label>
+          <fieldset class="grid gap-2"><legend class="font-bold">品牌特色</legend><div class="grid grid-cols-2 gap-2 text-sm">
+            <label><input type="checkbox" name="brand_tags" value="小農" /> 小農</label><label><input type="checkbox" name="brand_tags" value="在地食材" /> 在地食材</label><label><input type="checkbox" name="brand_tags" value="原住民族特色" /> 原住民族特色</label><label><input type="checkbox" name="brand_tags" value="燒烤／熟食" /> 燒烤／熟食</label><label><input type="checkbox" name="brand_tags" value="飲品" /> 飲品</label><label><input type="checkbox" name="brand_tags" value="甜點" /> 甜點</label><label><input type="checkbox" name="brand_tags" value="文創" /> 文創</label><label><input type="checkbox" name="brand_tags" value="餐車" /> 餐車</label>
+          </div></fieldset>
+        </div>
+      </section>
+
+      <section class="step" data-step="3">
+        <h2 class="text-xl font-black mb-5">3｜攤位與設備</h2>
+        <div class="grid gap-4">
+          <label class="grid gap-2"><span class="font-bold">常用攤位型態</span><select name="stall_type" class="border rounded-xl px-4 py-3"><option value="">請選擇</option><option>桌攤</option><option>3×3 帳篷</option><option>餐車</option><option>二輪車</option><option>其他</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">是否需要用電</span><select name="power_needed" class="border rounded-xl px-4 py-3"><option>視活動而定</option><option>需要</option><option>不需要</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">用電設備／電壓／安培／瓦數</span><textarea name="power_equipment" placeholder="例：電鍋 110V / 15A / 1650W" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">是否使用明火</span><select name="open_flame" class="border rounded-xl px-4 py-3"><option>視活動規定調整</option><option>是</option><option>否</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">是否使用瓦斯</span><select name="gas_usage" class="border rounded-xl px-4 py-3"><option>視活動規定調整</option><option>是</option><option>否</option></select></label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="generator_available" /> <span class="font-bold">有發電機</span></label>
+          <label class="grid gap-2"><span class="font-bold">消防／安全設備</span><textarea name="safety_equipment" class="border rounded-xl px-4 py-3"></textarea></label>
+          <label class="grid gap-2"><span class="font-bold">通常是否需要租桌子</span><select name="default_table_rental" class="border rounded-xl px-4 py-3"><option>視活動而定</option><option>需要</option><option>不需要</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">通常是否需要租椅子</span><select name="default_chair_rental" class="border rounded-xl px-4 py-3"><option>視活動而定</option><option>需要</option><option>不需要</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">其他設備或特殊需求</span><textarea name="special_requirements" class="border rounded-xl px-4 py-3"></textarea></label>
+        </div>
+      </section>
+
+      <section class="step" data-step="4">
+        <h2 class="text-xl font-black mb-5">4｜商業與食品資料</h2>
+        <div class="grid gap-4">
+          <label class="grid gap-2"><span class="font-bold">公司／商行／營業登記名稱</span><input name="company_name" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">統一編號</span><input name="tax_id" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">食品業者登錄字號</span><input name="food_business_registration" class="border rounded-xl px-4 py-3" /></label>
+          <label class="grid gap-2"><span class="font-bold">產品責任險</span><select name="liability_insurance_status" class="border rounded-xl px-4 py-3"><option>沒有</option><option>有</option><option>申請中</option></select></label>
+          <label class="grid gap-2"><span class="font-bold">是否可開發票／收據</span><select name="invoice_receipt_status" class="border rounded-xl px-4 py-3"><option>視情況</option><option>可以</option><option>不可以</option></select></label>
+          <fieldset class="grid gap-2"><legend class="font-bold">收款方式</legend><div class="grid grid-cols-2 gap-2 text-sm"><label><input type="checkbox" name="payment_methods" value="現金" /> 現金</label><label><input type="checkbox" name="payment_methods" value="LINE Pay" /> LINE Pay</label><label><input type="checkbox" name="payment_methods" value="信用卡" /> 信用卡</label><label><input type="checkbox" name="payment_methods" value="轉帳" /> 轉帳</label></div></fieldset>
+        </div>
+      </section>
+
+      <section class="step" data-step="5">
+        <h2 class="text-xl font-black mb-5">5｜照片與文件</h2>
+        <p class="text-sm text-slate-500 mb-4">支援 JPG、PNG、WEBP、PDF；單檔上限 10MB。</p>
+        <div class="grid gap-4">
+          <label class="grid gap-2"><span class="font-bold">品牌 Logo</span><input type="file" name="logo" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+          <label class="grid gap-2"><span class="font-bold">攤位照片</span><input type="file" name="stall_photo" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+          <label class="grid gap-2"><span class="font-bold">商品照片</span><input type="file" name="product_photo" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+          <label class="grid gap-2"><span class="font-bold">菜單</span><input type="file" name="menu" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+          <label class="grid gap-2"><span class="font-bold">產品責任險保單</span><input type="file" name="insurance_file" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+          <label class="grid gap-2"><span class="font-bold">食品登錄／商業登記文件</span><input type="file" name="registration_file" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+          <label class="grid gap-2"><span class="font-bold">其他文件</span><input type="file" name="other_file" accept="image/jpeg,image/png,image/webp,application/pdf" /></label>
+        </div>
+      </section>
+
+      <section class="step" data-step="6">
+        <h2 class="text-xl font-black mb-5">6｜代報授權與同意</h2>
+        <div class="grid gap-4">
+          <label class="flex items-start gap-3"><input class="mt-1" type="checkbox" name="authorization_fill" /><span><b>授權代為填寫</b><br><span class="text-sm text-slate-500">可使用本次建檔資料填寫市集／活動報名表。</span></span></label>
+          <label class="flex items-start gap-3"><input class="mt-1" type="checkbox" name="authorization_submit" /><span><b>授權符合條件時直接送出</b><br><span class="text-sm text-slate-500">資料完整，且沒有新增付款、驗證碼或重大條款時，可直接正式送件。</span></span></label>
+          <label class="flex items-start gap-3"><input class="mt-1" type="checkbox" name="allow_low_risk_terms" /><span><b>同意一般低風險活動規範可依授權直接勾選</b></span></label>
+          <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm leading-6">以下情況預設一定先確認本人：新增付款／保證金、驗證碼、重大法律或違約條款、無法確認的正式證件資料。</div>
+          <label class="flex items-start gap-3"><input class="mt-1" type="checkbox" name="consent_data_storage" required /><span><b>我同意資料保存與使用 *</b><br><span class="text-sm text-slate-500">資料僅用於市集／活動代報、補件、錄取追蹤與相關聯絡用途。</span></span></label>
+          <label class="grid gap-2"><span class="font-bold">簽名確認（輸入本人姓名）</span><input name="signature_name" class="border rounded-xl px-4 py-3" /></label>
+        </div>
+      </section>
+
+      <div id="status" class="hidden mt-6 rounded-2xl p-4 text-sm"></div>
+
+      <div class="flex items-center justify-between gap-3 mt-8 pt-6 border-t">
+        <button type="button" id="prevBtn" class="px-5 py-3 rounded-xl bg-slate-100 font-bold disabled:opacity-40" disabled>上一步</button>
+        <button type="button" id="nextBtn" class="px-5 py-3 rounded-xl bg-slate-900 text-white font-bold">下一步</button>
+        <button type="submit" id="submitBtn" class="hidden px-5 py-3 rounded-xl bg-emerald-600 text-white font-black">送出建檔</button>
+      </div>
+    </form>
+
+    <div id="successPanel" class="hidden bg-white rounded-3xl border border-emerald-200 p-8 text-center shadow-sm">
+      <div class="text-5xl mb-4">✅</div><h2 class="text-2xl font-black">建檔完成</h2><p class="text-slate-600 mt-3">你的客戶編號：</p><div id="clientCode" class="text-xl font-black text-emerald-700 mt-2"></div><p class="text-sm text-slate-500 mt-5">之後只要提供活動名稱或報名連結，即可進入活動評估與代報流程。</p>
+    </div>
+  </main>
+
+  <script>
+    const endpoint = 'https://xnacmcepnowoxvmmyvbw.supabase.co/functions/v1/vendor-onboarding-submit';
+    const form = document.getElementById('onboardingForm');
+    const steps = [...document.querySelectorAll('.step')];
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusBox = document.getElementById('status');
+    let current = 0;
+
+    function showStep(i){
+      steps.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+      current=i;
+      const pct=Math.round(((i+1)/steps.length)*100);
+      document.getElementById('stepLabel').textContent=`第 ${i+1} 步，共 ${steps.length} 步`;
+      document.getElementById('progressText').textContent=`${pct}%`;
+      document.getElementById('progressBar').style.width=`${pct}%`;
+      prevBtn.disabled=i===0;
+      nextBtn.classList.toggle('hidden',i===steps.length-1);
+      submitBtn.classList.toggle('hidden',i!==steps.length-1);
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function validateCurrent(){
+      const fields=[...steps[current].querySelectorAll('input,select,textarea')];
+      for(const el of fields){ if(!el.reportValidity()) return false; }
+      return true;
+    }
+    nextBtn.addEventListener('click',()=>{ if(validateCurrent() && current<steps.length-1) showStep(current+1); });
+    prevBtn.addEventListener('click',()=>{ if(current>0) showStep(current-1); });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(!validateCurrent()) return;
+      submitBtn.disabled=true; submitBtn.textContent='送出中…';
+      statusBox.className='mt-6 rounded-2xl p-4 text-sm bg-slate-100 text-slate-700'; statusBox.textContent='正在建立客戶資料與上傳文件，請不要關閉頁面。';
+      try{
+        const fd=new FormData(form);
+        const get=(n)=>String(fd.get(n)||'').trim();
+        const gets=(n)=>fd.getAll(n).map(String);
+        const payload={
+          contact_name:get('contact_name'), phone:get('phone'), email:get('email'), line_id:get('line_id'), address:get('address'), vehicle_type:get('vehicle_type'), vehicle_plate:get('vehicle_plate'),
+          brand_name:get('brand_name'), brand_intro:get('brand_intro'), brand_story:get('brand_story'), products:get('products'), price_range:get('price_range'), facebook_url:get('facebook_url'), instagram_url:get('instagram_url'), line_url:get('line_url'), brand_tags:gets('brand_tags'),
+          stall_type:get('stall_type'), power_needed:get('power_needed'), power_equipment:get('power_equipment'), open_flame:get('open_flame'), gas_usage:get('gas_usage'), generator_available:fd.has('generator_available'), safety_equipment:get('safety_equipment'), default_table_rental:get('default_table_rental'), default_chair_rental:get('default_chair_rental'), special_requirements:get('special_requirements'),
+          company_name:get('company_name'), tax_id:get('tax_id'), food_business_registration:get('food_business_registration'), liability_insurance_status:get('liability_insurance_status'), invoice_receipt_status:get('invoice_receipt_status'), payment_methods:gets('payment_methods'),
+          authorization_fill:fd.has('authorization_fill'), authorization_submit:fd.has('authorization_submit'), allow_low_risk_terms:fd.has('allow_low_risk_terms'), confirm_payment:true, confirm_verification_code:true, confirm_major_terms:true, consent_data_storage:fd.has('consent_data_storage'), signature_name:get('signature_name')
+        };
+        const out=new FormData(); out.append('payload',JSON.stringify(payload));
+        ['logo','stall_photo','product_photo','menu','insurance_file','registration_file','other_file'].forEach(n=>{ const f=fd.get(n); if(f instanceof File && f.size>0) out.append(n,f); });
+        const res=await fetch(endpoint,{method:'POST',body:out});
+        const data=await res.json();
+        if(!res.ok || !data.ok) throw new Error(data.error||'送出失敗');
+        form.classList.add('hidden'); document.querySelector('.mb-6')?.classList.add('hidden');
+        document.getElementById('successPanel').classList.remove('hidden'); document.getElementById('clientCode').textContent=data.client_code;
+      }catch(err){
+        statusBox.className='mt-6 rounded-2xl p-4 text-sm bg-red-50 border border-red-200 text-red-700'; statusBox.textContent='送出失敗：'+(err?.message||'請稍後再試');
+        submitBtn.disabled=false; submitBtn.textContent='重新送出';
+      }
+    });
+  </script>
+</body>
+</html>
