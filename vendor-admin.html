@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>市集代報｜客戶管理後台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}</style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex items-start justify-between gap-4 mb-6">
+      <div><p class="text-xs font-bold text-emerald-600">NAMASIA VENDOR OPS</p><h1 class="text-2xl md:text-3xl font-black">市集代報｜客戶管理後台</h1><p class="text-sm text-slate-500 mt-1">客戶建檔、資料完整度、代報授權與報名紀錄。</p></div>
+      <button id="logoutBtn" class="hidden px-4 py-2 rounded-xl bg-white border text-sm font-bold">登出</button>
+    </div>
+
+    <section id="loginPanel" class="bg-white border rounded-3xl p-5 md:p-7 shadow-sm max-w-xl">
+      <h2 class="font-black text-lg mb-2">管理員登入</h2>
+      <p class="text-sm text-slate-500 mb-4">輸入管理金鑰後即可讀取客戶資料。此金鑰只保存在這台裝置。</p>
+      <div class="flex flex-col sm:flex-row gap-3"><input id="tokenInput" type="password" class="flex-1 border rounded-xl px-4 py-3 text-base" placeholder="管理金鑰"/><button id="loginBtn" class="px-5 py-3 rounded-xl bg-slate-900 text-white font-black">登入後台</button></div>
+      <p id="loginMsg" class="text-sm mt-3"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+        <div class="bg-white border rounded-2xl p-4"><div class="text-xs text-slate-400">客戶總數</div><div id="tClients" class="text-2xl font-black mt-1">0</div></div>
+        <div class="bg-white border rounded-2xl p-4"><div class="text-xs text-slate-400">可直接代報</div><div id="tReady" class="text-2xl font-black mt-1">0</div></div>
+        <div class="bg-white border rounded-2xl p-4"><div class="text-xs text-slate-400">報名紀錄</div><div id="tRegs" class="text-2xl font-black mt-1">0</div></div>
+        <div class="bg-white border rounded-2xl p-4"><div class="text-xs text-slate-400">已送件</div><div id="tSubmitted" class="text-2xl font-black mt-1">0</div></div>
+        <div class="bg-white border rounded-2xl p-4"><div class="text-xs text-slate-400">已錄取</div><div id="tAdmitted" class="text-2xl font-black mt-1">0</div></div>
+      </div>
+
+      <div class="bg-white border rounded-3xl p-4 md:p-5 shadow-sm mb-4">
+        <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+          <input id="searchInput" class="w-full md:max-w-md border rounded-xl px-4 py-3 text-base" placeholder="搜尋姓名、品牌、客戶編號、電話"/>
+          <button id="refreshBtn" class="px-4 py-3 rounded-xl bg-emerald-600 text-white font-black">重新整理</button>
+        </div>
+      </div>
+
+      <div id="clientList" class="grid md:grid-cols-2 gap-4"></div>
+      <p id="emptyMsg" class="hidden text-center text-slate-400 py-12">目前還沒有客戶資料。</p>
+    </section>
+  </main>
+
+  <div id="modal" class="hidden fixed inset-0 bg-black/45 p-3 md:p-8 overflow-y-auto">
+    <div class="bg-white max-w-3xl mx-auto rounded-3xl p-5 md:p-7 my-4">
+      <div class="flex items-center justify-between gap-3"><h2 id="modalTitle" class="text-xl font-black">客戶資料</h2><button id="closeModal" class="w-11 h-11 rounded-xl bg-slate-100 font-black">✕</button></div>
+      <div id="modalBody" class="mt-5"></div>
+    </div>
+  </div>
+
+<script>
+const API='https://xnacmcepnowoxvmmyvbw.supabase.co/functions/v1/vendor-admin-api';
+let allRows=[];
+const $=(id)=>document.getElementById(id);
+const esc=(s)=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function token(){return localStorage.getItem('vendorAdminToken')||''}
+async function api(body){const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-admin-token':token()},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'讀取失敗');return j}
+function setLogin(ok){$('loginPanel').classList.toggle('hidden',ok);$('dashboard').classList.toggle('hidden',!ok);$('logoutBtn').classList.toggle('hidden',!ok)}
+function badge(text,cls){return `<span class="inline-flex px-2.5 py-1 rounded-full text-xs font-black ${cls}">${esc(text)}</span>`}
+function render(rows){$('clientList').innerHTML='';$('emptyMsg').classList.toggle('hidden',rows.length>0);for(const r of rows){const ready=r.can_auto_submit?badge('可直接代報','bg-emerald-100 text-emerald-700'):badge('送出前需確認','bg-amber-100 text-amber-700');const latest=r.latest_registration?`${esc(r.latest_registration.event_name)}｜${esc(r.latest_registration.submission_status)}`:'尚無報名紀錄';const el=document.createElement('button');el.className='text-left bg-white border rounded-3xl p-5 shadow-sm hover:shadow-md transition';el.innerHTML=`<div class="flex items-start justify-between gap-3"><div><div class="text-xs text-slate-400">${esc(r.client_code)}</div><h3 class="font-black text-lg mt-1">${esc(r.brand_name)}</h3><p class="text-sm text-slate-600">${esc(r.contact_name)}${r.phone?' · '+esc(r.phone):''}</p></div>${ready}</div><div class="mt-4"><div class="flex justify-between text-xs mb-1"><span class="text-slate-500">資料完整度</span><b>${r.completeness}%</b></div><div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width:${Math.max(0,Math.min(100,r.completeness))}%"></div></div></div><div class="grid grid-cols-3 gap-2 mt-4 text-center"><div class="bg-slate-50 rounded-xl p-2"><b>${r.registrations_count}</b><div class="text-[11px] text-slate-400">報名</div></div><div class="bg-slate-50 rounded-xl p-2"><b>${r.submitted_count}</b><div class="text-[11px] text-slate-400">已送件</div></div><div class="bg-slate-50 rounded-xl p-2"><b>${r.admitted_count}</b><div class="text-[11px] text-slate-400">已錄取</div></div></div><p class="text-xs text-slate-400 mt-4 truncate">最近：${latest}</p>`;el.addEventListener('click',()=>openDetail(r.id));$('clientList').appendChild(el)}}
+async function load(){const j=await api({action:'dashboard'});allRows=j.rows||[];$('tClients').textContent=j.totals.clients;$('tReady').textContent=j.totals.auto_submit_ready;$('tRegs').textContent=j.totals.registrations;$('tSubmitted').textContent=j.totals.submitted;$('tAdmitted').textContent=j.totals.admitted;render(allRows)}
+async function openDetail(id){$('modal').classList.remove('hidden');$('modalBody').innerHTML='<p class="text-slate-400">讀取中…</p>';try{const j=await api({action:'client_detail',client_id:id});const c=j.client||{},b=j.brand||{},regs=j.registrations||[];$('modalTitle').textContent=b.brand_name||c.contact_name||'客戶資料';const yes=v=>v?badge('是','bg-emerald-100 text-emerald-700'):badge('否','bg-slate-100 text-slate-500');$('modalBody').innerHTML=`<div class="grid md:grid-cols-2 gap-4"><div class="border rounded-2xl p-4"><h3 class="font-black mb-3">聯絡資料</h3><div class="text-sm space-y-2"><p>客戶編號：<b>${esc(c.client_code)}</b></p><p>聯絡人：${esc(c.contact_name)}</p><p>電話：${esc(c.phone||'—')}</p><p>Email：${esc(c.email||'—')}</p><p>LINE：${esc(c.line_id||'—')}</p></div></div><div class="border rounded-2xl p-4"><h3 class="font-black mb-3">代報授權</h3><div class="text-sm space-y-2"><p>可代填：${yes(c.authorization_fill)}</p><p>可直接送出：${yes(c.authorization_submit)}</p><p>低風險條款：${yes(c.allow_low_risk_terms)}</p><p>資料保存同意：${yes(c.consent_data_storage)}</p></div></div></div><div class="border rounded-2xl p-4 mt-4"><h3 class="font-black mb-3">品牌資料</h3><div class="text-sm space-y-2"><p>品牌：<b>${esc(b.brand_name||'—')}</b></p><p>介紹：${esc(b.brand_intro||'—')}</p><p>商品：${esc(b.products||'—')}</p><p>統編：${esc(b.tax_id||'—')}</p><p>食品登錄：${esc(b.food_business_registration||'—')}</p><p>責任險：${esc(b.liability_insurance_status||'—')}</p></div></div><div class="mt-4"><h3 class="font-black mb-3">報名紀錄 (${regs.length})</h3>${regs.length?regs.map(r=>`<div class="border rounded-2xl p-4 mb-3"><div class="font-black">${esc(r.event_name)}</div><div class="text-sm text-slate-500 mt-1">${esc(r.event_date_start||'日期未填')} · ${esc(r.event_location||'地點未填')}</div><div class="mt-2 flex flex-wrap gap-2">${badge(r.submission_status||'未送件','bg-blue-100 text-blue-700')}${badge(r.admission_status||'未公布','bg-slate-100 text-slate-600')}</div></div>`).join(''):'<p class="text-sm text-slate-400">尚無報名紀錄。</p>'}</div>`}catch(e){$('modalBody').innerHTML=`<p class="text-red-600">${esc(e.message)}</p>`}}
+$('loginBtn').addEventListener('click',async()=>{const v=$('tokenInput').value.trim();if(!v)return;$('loginMsg').textContent='登入中…';localStorage.setItem('vendorAdminToken',v);try{await load();setLogin(true);$('loginMsg').textContent=''}catch(e){localStorage.removeItem('vendorAdminToken');$('loginMsg').className='text-sm mt-3 text-red-600';$('loginMsg').textContent='登入失敗，請檢查管理金鑰。'}});
+$('logoutBtn').addEventListener('click',()=>{localStorage.removeItem('vendorAdminToken');location.reload()});
+$('refreshBtn').addEventListener('click',()=>load().catch(alert));
+$('searchInput').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();render(allRows.filter(r=>[r.client_code,r.contact_name,r.phone,r.email,r.brand_name].some(v=>String(v||'').toLowerCase().includes(q))))});
+$('closeModal').addEventListener('click',()=>$('modal').classList.add('hidden'));
+$('modal').addEventListener('click',e=>{if(e.target===$('modal'))$('modal').classList.add('hidden')});
+(async()=>{if(token()){try{await load();setLogin(true)}catch{localStorage.removeItem('vendorAdminToken')}}})();
+</script>
+</body>
+</html>
