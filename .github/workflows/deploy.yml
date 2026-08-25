@@ -35,6 +35,11 @@ jobs:
         env:
           VITE_API_KEY: ${{ secrets.API_KEY }}
 
+      - name: Copy standalone tools into dist
+        run: |
+          cp vendor-onboarding.html dist/vendor-onboarding.html
+          cp vendor-admin.html dist/vendor-admin.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
