@@ -12,10 +12,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: namasia-mac-heartbeat
-  cancel-in-progress: true
-
 jobs:
   heartbeat:
     runs-on: [self-hosted, macOS, ARM64, namasia1]
