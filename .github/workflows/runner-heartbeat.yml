@@ -20,34 +20,78 @@ jobs:
   heartbeat:
     runs-on: [self-hosted, macOS, ARM64, namasia]
     timeout-minutes: 5
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
     steps:
-      - name: Report Mac runner health
+      - name: Report Mac runner health to Supabase
         shell: bash
         run: |
           set -euo pipefail
 
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SECRET_KEY:-}" ]; then
+            echo "Required Supabase Actions secrets are missing." >&2
+            exit 1
+          fi
+
           checked_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          machine_name="$(hostname)"
           codex_version="not-found"
           if [ -x /usr/local/bin/codex ]; then
             codex_version="$(/usr/local/bin/codex --version | head -n 1)"
           fi
 
+          payload="$(python3 - "$checked_at" "$machine_name" "$codex_version" "$RUNNER_NAME" "$RUNNER_OS" "$RUNNER_ARCH" "$GITHUB_RUN_ID" "$GITHUB_JOB" <<'PY'
+          import json
+          import sys
+
+          checked_at, machine_name, codex_version, runner_name, runner_os, runner_arch, run_id, job = sys.argv[1:]
+          print(json.dumps({
+              "status": "ONLINE",
+              "machine_name": machine_name,
+              "codex_version": codex_version,
+              "last_seen_at": checked_at,
+              "last_result": "GitHub Actions heartbeat succeeded",
+              "updated_at": checked_at,
+              "metadata": {
+                  "runner_name": runner_name,
+                  "runner_os": runner_os,
+                  "runner_arch": runner_arch,
+                  "github_run_id": run_id,
+                  "github_job": job
+              }
+          }, ensure_ascii=False))
+          PY
+          )"
+
+          response="$(curl --fail --silent --show-error \
+            --request PATCH \
+            "${SUPABASE_URL}/rest/v1/execution_nodes?node_key=eq.namasia-mac" \
+            --header "apikey: ${SUPABASE_SECRET_KEY}" \
+            --header "Content-Type: application/json" \
+            --header "Prefer: return=representation" \
+            --data "$payload")"
+
+          python3 -c 'import json,sys; data=json.load(sys.stdin); assert len(data)==1 and data[0]["node_key"]=="namasia-mac", "Heartbeat row was not updated"' <<<"$response"
+
           {
             echo "## 那瑪夏小農夫 Mac Runner 心跳"
             echo
             echo "- 狀態：ONLINE"
+            echo "- Supabase：已回寫"
             echo "- 檢查時間（UTC）：$checked_at"
             echo "- Runner：$RUNNER_NAME"
             echo "- 作業系統：$RUNNER_OS"
             echo "- 架構：$RUNNER_ARCH"
-            echo "- 電腦名稱：$(hostname)"
+            echo "- 電腦名稱：$machine_name"
             echo "- Codex：$codex_version"
           } >> "$GITHUB_STEP_SUMMARY"
 
           echo "NAMASIA_RUNNER_HEARTBEAT=ONLINE"
+          echo "SUPABASE_HEARTBEAT_UPDATED=true"
           echo "CHECKED_AT=$checked_at"
           echo "RUNNER_NAME=$RUNNER_NAME"
           echo "RUNNER_OS=$RUNNER_OS"
           echo "RUNNER_ARCH=$RUNNER_ARCH"
-          echo "MACHINE_NAME=$(hostname)"
+          echo "MACHINE_NAME=$machine_name"
           echo "CODEX_VERSION=$codex_version"
